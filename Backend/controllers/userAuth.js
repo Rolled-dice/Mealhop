@@ -2,6 +2,7 @@ import z from "zod";
 import { User } from "../models/userModel.js";
 import bcrypt from "bcryptjs";
 import userToken from "../utils/token.js";
+import { sendOtpEmail } from "../utils/mail.js";
 
 const signupSchema = z.object({
   Fullname: z.string().min(1, "Fullname is required"),
@@ -93,5 +94,78 @@ export const userSignout = async (req, res) => {
     res.status(200).json({ message: "Signout successful" });
   } catch (err) {
     res.status(500).json({ message: "internal server error", err });
+  }
+};
+
+export const sendOtp = async (req, res) => {
+  try {
+    const { Email } = req.body;
+    const user = await User.findOne({ Email });
+    if (!user) {
+      return res.status(400).json({ message: "User does not exist" });
+    }
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    console.log(otp);
+    user.resetOtp = otp;
+    const otpExpiry = new Date(Date.now() + 5 * 60 * 1000); //5 minutes from now
+    user.otpExpiry = otpExpiry;
+    user.isOtpVerified = false;
+    await user.save();
+    await sendOtpEmail(Email, otp);
+    res.status(200).json({ message: "OTP sent to email" });
+  } catch (err) {
+    res.status(500).json(`message: "internal server error", ${err} `);
+  }
+};
+
+export const verifyOtp = async (req, res) => {
+  try {
+    const { Email, otp } = req.body;
+
+    const user = await User.findOne({ Email });
+    if (!user) {
+      return res.status(404).json({ msg: "User not found" });
+    }
+
+    if (!user.resetOtp || !user.otpExpiry) {
+      return res.status(400).json({ msg: "OTP not requested" });
+    }
+
+    if (user.otpExpiry < Date.now()) {
+      return res.status(400).json({ msg: "OTP expired" });
+    }
+
+    if (otp !== user.resetOtp) {
+      return res.status(400).json({ msg: "Invalid OTP" });
+    }
+
+    user.isOtpVerified = true;
+    user.resetOtp = undefined;
+    user.otpExpiry = undefined;
+
+    await user.save();
+    return res.status(200).json({ msg: "OTP verified successfully" });
+  } catch (err) {
+    return res.status(500).json({
+      msg: "Verify OTP error",
+      error: err.message,
+    });
+  }
+};
+
+export const resetPassword = async (req, res) => {
+  try {
+    const { Email, password } = req.body;
+    const user = await User.findOne({ Email });
+    if (!user.isOtpVerified || !user) {
+      return res.status(400).json({ msg: "Invalid email/otp error" });
+    }
+    const pass = await bcrypt.hash(password, 10);
+    user.password = pass;
+    user.isOtpVerified = false;
+    await user.save();
+    return res.status(200).json({ msg: "Password reset Sucessfully" });
+  } catch (err) {
+    return res.status(500).json(` Email/otp error ${err.message}`);
   }
 };

@@ -1,8 +1,10 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { url } from "../App";
+import { useNavigate } from "react-router-dom";
 
 const SignIn = () => {
+  const navigate = useNavigate();
   const primaryColor = "#ff4d2d"; // Indigo-600
   const hoverColor = "#e64323"; // Indigo-700
   const bgcolor = "#fff9f6"; // Indigo-50
@@ -32,14 +34,14 @@ const SignIn = () => {
         style={{ border: `1px solid ${borderColor}` }}
       >
         <h2
-          className="text-2xl font-bold mb-3 text-center"
+          className="block text-2xl mb-1 font-medium "
           style={{ color: primaryColor }}
         >
           MealHop
         </h2>
         <h3
           className="text-xl font-semibold  mb-6 text-center"
-          //   style={{ color: primaryColor }}
+          style={{ color: primaryColor }}
         >
           Sign in to your account to continue enjoying delicious meals
         </h3>
@@ -73,12 +75,21 @@ const SignIn = () => {
             type="text"
             placeholder="Enter your Password"
             value={passwordInput}
-            className="w-full px-4 mb-6 py-2 border rounded-lg focus:outline-none focus:ring-2"
+            className="w-full px-4 mb-2 py-2 border rounded-lg focus:outline-none focus:ring-2"
             style={{ borderColor: borderColor }}
             onChange={(e) => {
               setPasswordInput(e.target.value);
             }}
           />
+          <div
+            className=" text-xl  flex mb-2 ml-50 font-medium cursor-pointer"
+            style={{ color: primaryColor }}
+            onClick={() => {
+              navigate("/forgotpassword");
+            }}
+          >
+            Forgotten Password
+          </div>
         </div>
         <button
           className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 bg-[#ff4d2d] hover:bg-[#e64323]  text-white font-bold`}
