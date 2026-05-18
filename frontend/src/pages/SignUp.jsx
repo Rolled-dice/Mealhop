@@ -13,6 +13,7 @@ const SignUp = () => {
   const [Email, setEmail] = React.useState("");
   const [PhoneNumber, setPhoneNumber] = React.useState("");
   const [passwordInput, setPasswordInput] = React.useState("");
+  const [error, setError] = React.useState("");
   const primaryColor = "#ff4d2d"; // Indigo-600
   const hoverColor = "#e64323"; // Indigo-700
   const bgcolor = "#fff9f6"; // Indigo-50
@@ -31,9 +32,12 @@ const SignUp = () => {
         },
         { withCredentials: true }
       );
-      console.log("Signup Success:", res.data); // ✅ ADD THIS
+      console.log("Signup Success:", res.data);
+      // Redirect to signin after successful signup
+      navigate("/signin");
     } catch (error) {
       console.log("Signup Error:", error);
+      setError(error.response?.data?.message || "Signup failed. Please try again.");
     }
   };
   return (
@@ -164,6 +168,9 @@ const SignUp = () => {
           })}
         </div>
         <div>
+          {error && (
+            <p className="text-red-500 text-sm mb-2">{error}</p>
+          )}
           <button
             className={`w-full mb-6 mt-6 px-4 py-2 rounded-lg text-white font-bold
                    transition duration-300 bg-[#ff4d2d] hover:opacity-70 cursor-pointer`}

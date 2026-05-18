@@ -11,6 +11,8 @@ const SignIn = () => {
   const borderColor = "#ddd"; // Indigo-200
   const [Email, setEmail] = useState("");
   const [passwordInput, setPasswordInput] = useState("");
+  const [error, setError] = useState("");
+  
   const handleSignin = async () => {
     try {
       const res = await axios.post(
@@ -21,9 +23,12 @@ const SignIn = () => {
         },
         { withCredentials: true }
       );
-      console.log("Signin Success:", res.data); // ✅ ADD THIS
+      console.log("Signin Success:", res.data);
+      // Redirect based on role
+      navigate("/");
     } catch (error) {
       console.log("Signin Error:", error);
+      setError(error.response?.data?.message || "Sign in failed. Please try again.");
     }
   };
 
@@ -72,7 +77,7 @@ const SignIn = () => {
             Password
           </label>
           <input
-            type="text"
+            type="password"
             placeholder="Enter your Password"
             value={passwordInput}
             className="w-full px-4 mb-2 py-2 border rounded-lg focus:outline-none focus:ring-2"
@@ -81,6 +86,9 @@ const SignIn = () => {
               setPasswordInput(e.target.value);
             }}
           />
+          {error && (
+            <p className="text-red-500 text-sm mb-2">{error}</p>
+          )}
           <div
             className=" text-xl  flex mb-2 ml-50 font-medium cursor-pointer"
             style={{ color: primaryColor }}
