@@ -5,6 +5,9 @@ import connectDB from "./config/db.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import authrouter from "./routes/userAuthRoutes.js";
+import deliveryRouter from "./routes/deliveryRoutes.js";
+import paymentRouter from "./routes/paymentRoutes.js";
+
 const app = express();
 app.use(express.json()); // for the body pasrer.
 app.use(cookieParser());
@@ -15,6 +18,8 @@ app.use(
   })
 );
 app.use("/api/auth", authrouter);
+app.use("/api/delivery", deliveryRouter);
+app.use("/api/payment", paymentRouter);
 
 const PORT = process.env.PORT || 5000;
 
