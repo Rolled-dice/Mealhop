@@ -1,157 +1,116 @@
-# MealHop 🍔
+# MealHop - Food Delivery Platform
 
-A full-featured food delivery platform with role-based dashboards for Users, Delivery Agents, and Restaurant Owners.
+A full-stack food delivery application with customer ordering, restaurant management, and delivery tracking.
 
-## Features
+## Tech Stack
 
-### 👤 User Features
-- 🔐 Authentication (Sign Up/Sign In with JWT)
-- 🍽️ Browse Restaurants
-- 📦 Order Tracking
-- 💳 Payment (Card/Cash on Delivery)
-- 💬 AI Support Chat (24/7)
-- 🔒 Password Reset with OTP
+- **Frontend**: Astro + React + Tailwind CSS
+- **Backend**: Express.js + MongoDB (Mongoose)
+- **Auth**: JWT with HTTP-only cookies
+- **Payment**: Stripe (optional, works in mock mode)
 
-### 🚴 Delivery Agent Features
-- 📋 Available Orders List
-- ✅ Accept/Reject Orders
-- 📍 Real-time Map Tracking (OpenStreetMap - free)
-- 💰 Earnings Dashboard
-- 📱 Order Status Updates
+## Quick Start (Development)
 
-### 🏪 Restaurant Owner Features
-- 🍕 Menu Management
-- 📝 Order Management
-- 📊 Analytics Dashboard
-
-### 💳 Payment Gateway
-- **Stripe Integration** (Test mode available)
-- Cash on Delivery support
-- Add `STRIPE_SECRET_KEY` to enable real payments
-
-### 🗺️ Map Navigation
-- **OpenStreetMap** (free, no API key needed)
-- Real-time delivery tracking
-- Route visualization
-
-### 🤖 AI Support Chat
-- Rule-based FAQ bot (works without API key)
-- OpenAI integration ready (add `OPENAI_API_KEY`)
-
----
-
-## 🚀 Getting Started
-
-### Prerequisites
-- Node.js 18+
-- MongoDB (local or Atlas)
-
-### Installation
-
+### 1. Backend
 ```bash
-# Backend
 cd Backend
 npm install
-
-# Frontend  
-cd ../frontend
-npm install
-```
-
-### Environment Setup
-
-1. **Copy the example env file:**
-```bash
-cd Backend
-cp .env.example .env
-```
-
-2. **Configure your `.env` file:**
-
-```env
-# MongoDB Connection
-MONGODB_URL=mongodb://localhost:27017/mealhop
-
-# JWT Configuration (generate a secure random string)
-JWT_SECRET=your-super-secret-jwt-key-change-in-production
-
-# Email Configuration (for password reset OTP)
-EMAIL=your-email@gmail.com
-EMAIL_PASS=your-app-password
-
-# ============================================
-# OPTIONAL: Enable Additional Features
-# ============================================
-
-# Stripe Payment (for real payments)
-# Get keys from: https://dashboard.stripe.com/test/apikeys
-STRIPE_SECRET_KEY=sk_test_your_stripe_secret_key
-STRIPE_PUBLISHABLE_KEY=pk_test_your_stripe_publishable_key
-
-# OpenAI (for smarter AI chat)
-# Get key from: https://platform.openai.com/api-keys
-OPENAI_API_KEY=sk_your_openai_api_key
-
-# Google Maps (optional - for advanced mapping)
-# Get key from: https://console.cloud.google.com/google/maps-apis
-GOOGLE_MAPS_API_KEY=your_google_maps_api_key
-```
-
-### Running the App
-
-```bash
-# Terminal 1 - Backend
-cd Backend
-npm start
-# Server runs on http://localhost:8000
-
-# Terminal 2 - Frontend
-cd frontend
+# Edit .env with your MongoDB URL and JWT secret
 npm run dev
-# App runs on http://localhost:5173
 ```
 
----
+### 2. Frontend
+```bash
+cd frontend-new
+npm install
+npm run dev
+```
 
-## 🔑 API Keys Guide
+### 3. Seed Database (first time only)
+```bash
+cd Backend
+npm run seed
+```
 
-### Where to Get Each Key:
+App runs at: http://localhost:4321 (frontend) + http://localhost:8000 (API)
 
-| Service | URL | Notes |
-|---------|-----|-------|
-| **MongoDB** | https://www.mongodb.com/cloud/atlas | Free tier available |
-| **Stripe** | https://dashboard.stripe.com/test/apikeys | Use test keys for development |
-| **OpenAI** | https://platform.openai.com/api-keys | Optional - bot works without it |
-| **Google Maps** | https://console.cloud.google.com/google/maps-apis | Optional - OSM works free |
+## Production Deployment
 
----
+### Backend (Node.js hosting - Railway, Render, EC2, etc.)
 
-## 🛠️ Tech Stack
+1. Set environment variables:
+   ```
+   MONGODB_URL=mongodb+srv://...
+   JWT_SECRET=<strong-random-secret>
+   PORT=8000
+   NODE_ENV=production
+   CORS_ORIGINS=https://your-frontend-domain.com
+   EMAIL=your-email@gmail.com
+   EMAIL_PASS=your-app-password
+   ```
 
-### Backend
-- Node.js + Express
-- MongoDB + Mongoose
-- JWT Authentication
-- Zod Validation
-- Nodemailer (emails)
+2. Deploy:
+   ```bash
+   cd Backend
+   npm install --production
+   npm start
+   ```
 
-### Frontend
-- React + Vite
-- Tailwind CSS
-- React Router
-- Axios
-- Leaflet/OpenStreetMap
+### Frontend (Vercel, Netlify, or Node.js)
 
----
+1. Set environment variable:
+   ```
+   PUBLIC_API_URL=https://your-backend-domain.com
+   ```
 
-## 📱 User Roles
+2. Build & deploy:
+   ```bash
+   cd frontend-new
+   npm install
+   npm run build
+   node dist/server/entry.mjs  # For Node.js hosting
+   ```
 
-1. **User** - Order food, track orders, make payments
-2. **Owner** - Manage restaurant menu and orders
-3. **Delivery Boy** - Accept deliveries, track earnings
+   Or deploy to Vercel/Netlify with the build command `npm run build`.
 
----
+## Test Accounts
 
-## 📄 License
+| Role | Email | Password |
+|------|-------|----------|
+| Customer | rahul@mealhop.com | Password@123 |
+| Customer | priya@mealhop.com | Password@123 |
+| Customer | amit@mealhop.com | Password@123 |
+| Owner | spicegarden@mealhop.com | Password@123 |
+| Owner | pizzapalace@mealhop.com | Password@123 |
+| Owner | dragonwok@mealhop.com | Password@123 |
+| Delivery | ravi@mealhop.com | Password@123 |
+| Delivery | suresh@mealhop.com | Password@123 |
 
-MIT
+## API Endpoints
+
+| Route | Description |
+|-------|-------------|
+| `POST /api/auth/signup` | Register |
+| `POST /api/auth/signin` | Login |
+| `POST /api/auth/logout` | Logout |
+| `GET /api/auth/me` | Current user |
+| `GET /api/restaurants` | List restaurants |
+| `GET /api/restaurants/:id` | Restaurant + menu |
+| `POST /api/orders` | Place order |
+| `GET /api/orders/my` | Customer orders |
+| `GET /api/orders/owner/all` | Owner's orders |
+| `PATCH /api/orders/:id/status` | Update order status |
+| `GET /api/owner/analytics` | Business analytics |
+| `POST /api/restaurants/menu` | Add menu item |
+| `PUT /api/restaurants/menu/:id` | Update menu item |
+| `DELETE /api/restaurants/menu/:id` | Delete menu item |
+| `GET /api/delivery/orders/available` | Available deliveries |
+| `POST /api/delivery/orders/:id/accept` | Accept delivery |
+| `GET /api/delivery/earnings` | Delivery earnings |
+| `GET /api/health` | Health check |
+
+## Running Tests
+```bash
+cd Backend
+npm test
+```

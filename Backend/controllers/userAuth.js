@@ -6,7 +6,7 @@ import { sendOtpEmail } from "../utils/mail.js";
 
 const signupSchema = z.object({
   Fullname: z.string().min(1, "Fullname is required"),
-  Email: z.email("Invalid email"),
+  Email: z.string().email("Invalid email"),
   password: z.string().min(8, "Password must be at least 8 characters long"),
   PhoneNumber: z.string().optional(),
   role: z.string().optional(),
@@ -17,7 +17,7 @@ export const userSignUp = async (req, res) => {
     // Validate using Zod
     const data = signupSchema.safeParse(req.body);
     if (!data.success) {
-      return res.status(400).json({ message: data.error.errors[0].message });
+      return res.status(400).json({ message: data.error.issues?.[0]?.message || "Validation failed" });
     }
 
     const { Fullname, Email, password, PhoneNumber, role } = data.data;
@@ -49,8 +49,8 @@ export const userSignUp = async (req, res) => {
     res.cookie("token", gentoken, {
       httpOnly: true,
       maxAge: 7 * 24 * 60 * 60 * 1000,
-      secure: false,
-      sameSite: "strict",
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
     });
 
     res.status(201).json({ message: "Signup successful", user });
@@ -78,8 +78,8 @@ export const userSignin = async (req, res) => {
     res.cookie("token", gentoken, {
       httpOnly: true,
       maxAge: 7 * 24 * 60 * 60 * 1000,
-      secure: false,
-      sameSite: "strict",
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
     });
 
     res.status(200).json({ message: "Signin successful", user });

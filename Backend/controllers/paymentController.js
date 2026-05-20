@@ -120,3 +120,15 @@ export const processCOD = async (req, res) => {
     res.status(500).json({ message: "COD error", error: err.message });
   }
 };
+
+// Handle Stripe webhooks
+export const handleWebhook = async (req, res) => {
+  try {
+    // This is a placeholder for Stripe webhook integration
+    // Real implementation would verify stripe signature and update order status
+    console.log("Webhook received:", req.body);
+    res.status(200).json({ received: true });
+  } catch (err) {
+    res.status(500).json({ message: "Webhook error", error: err.message });
+  }
+};

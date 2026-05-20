@@ -14,6 +14,7 @@ const authrouter = express.Router();
 authrouter.post("/signup", userSignUp);
 authrouter.post("/signin", userSignin);
 authrouter.post("/signout", userSignout);
+authrouter.post("/logout", userSignout);
 authrouter.get("/me", verifyToken, getCurrentUser);
 authrouter.post("/send-otp", sendOtp);
 authrouter.post("/verify-otp", verifyOtp);

@@ -1,0 +1,10 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import RestaurantDetail from '../../components/pages/RestaurantDetail.jsx';
+
+export const prerender = false;
+---
+
+<BaseLayout title="Restaurant">
+	<RestaurantDetail client:load />
+</BaseLayout>
